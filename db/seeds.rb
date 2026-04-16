@@ -2,6 +2,7 @@
 
 require "bcrypt"
 require "securerandom"
+require "faker"
 require "etc"
 
 puts "Starting Ultra-Fast Parallel Seeding 🚀"
@@ -18,11 +19,17 @@ ActiveRecord::Base.connection.execute("TRUNCATE TABLE users, products, orders, o
 
 # 1. Users
 puts "Seeding #{NUM_USERS} users..."
-default_password = BCrypt::Password.create("password123")
-users = NUM_USERS.times.map do |i|
+default_password = BCrypt::Password.create("password")
+seen_emails = {}
+users = NUM_USERS.times.map do
+  first_name = Faker::Name.first_name.gsub(/[^a-zA-Z]/, "")
+  last_name  = Faker::Name.last_name.gsub(/[^a-zA-Z]/, "")
+  email = "#{first_name.downcase}.#{last_name.downcase}_#{rand(1..9999)}@example.com"
+
   {
-    username: "user_#{i+1}_#{SecureRandom.hex(4)}",
-    email: "user_#{i+1}_#{SecureRandom.hex(4)}@example.com",
+    first_name: first_name,
+    last_name: last_name,
+    email: email,
     password_digest: default_password,
     created_at: Time.now,
     updated_at: Time.now
@@ -35,8 +42,7 @@ puts "Users done!"
 puts "Seeding #{NUM_PRODUCTS} products..."
 products = NUM_PRODUCTS.times.map do |i|
   {
-    name: "Product Model #{i+1} #{SecureRandom.hex(2).upcase}",
-    description: "High quality item, perfect for all your needs. Fully backed by warranty.",
+    name: "#{Faker::Commerce.material} #{Faker::Commerce.product_name} #{Faker::Alphanumeric.alphanumeric(number: 4).upcase}",
     price: rand(5.0..999.99).round(2),
     stock: rand(10..1000),
     created_at: Time.now,

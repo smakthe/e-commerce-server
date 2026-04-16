@@ -1,15 +1,11 @@
-# frozen_string_literal: true
-
 class UsersController < ApplicationController
   skip_before_action :authenticate_request, only: [ :index, :show ]
 
-  # GET /users
   def index
     users = User.all
     render json: users.map { |u| user_response(u) }
   end
 
-  # GET /users/:id
   def show
     user = User.find(params[:id])
     render json: user_response(user)
@@ -17,12 +13,10 @@ class UsersController < ApplicationController
     render json: { error: "User not found" }, status: :not_found
   end
 
-  # GET /users/me
   def me
     render json: user_response(current_user)
   end
 
-  # PATCH /users/me
   def update
     if current_user.update(user_params)
       render json: user_response(current_user)
@@ -31,7 +25,6 @@ class UsersController < ApplicationController
     end
   end
 
-  # DELETE /users/me
   def destroy
     current_user.destroy
     render json: { message: "Account deleted successfully" }, status: :ok
@@ -40,14 +33,16 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.permit(:username, :email, :password, :password_confirmation)
+    params.permit(:first_name, :last_name, :email, :password, :password_confirmation)
   end
 
   def user_response(user)
     {
-      id: user.id,
-      username: user.username,
-      email: user.email,
+      id:         user.id,
+      first_name: user.first_name,
+      last_name:  user.last_name,
+      full_name:  user.full_name,
+      email:      user.email,
       created_at: user.created_at
     }
   end

@@ -1,9 +1,6 @@
-# frozen_string_literal: true
-
 class AuthController < ApplicationController
   skip_before_action :authenticate_request, only: [ :register, :login ]
 
-  # POST /auth/register
   def register
     user = User.new(register_params)
 
@@ -19,7 +16,6 @@ class AuthController < ApplicationController
     end
   end
 
-  # POST /auth/login
   def login
     user = User.find_by(email: params[:email])
 
@@ -38,10 +34,10 @@ class AuthController < ApplicationController
   private
 
   def register_params
-    params.permit(:username, :email, :password, :password_confirmation)
+    params.permit(:first_name, :last_name, :email, :password, :password_confirmation)
   end
 
   def user_response(user)
-    { id: user.id, username: user.username, email: user.email }
+    { id: user.id, full_name: user.full_name, email: user.email }
   end
 end
