@@ -17,6 +17,10 @@ class UsersController < ApplicationController
     render json: user_response(current_user)
   end
 
+  def stats
+    render json: current_user.dashboard_stats
+  end
+
   def update
     if current_user.update(user_params)
       render json: user_response(current_user)

@@ -1,7 +1,12 @@
 # frozen_string_literal: true
 
 class ProductsController < ApplicationController
-  skip_before_action :authenticate_request, only: [ :index, :show ]
+  skip_before_action :authenticate_request, only: [ :index, :show, :explore ]
+
+  # GET /products/explore
+  def explore
+    render json: Product.explore_data
+  end
 
   # GET /products
   def index
