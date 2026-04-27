@@ -22,7 +22,7 @@ class User < ApplicationRecord
       total_amount: amount,
       average_order_value: total > 0 ? (amount.to_f / total).round(2) : 0,
       daily_spend: daily_spend_stats,
-      status_distribution: orders.group(:status).sum(:total_amount),
+      status_distribution: orders.group(:status).count,
       top_products: top_purchased_products
     }
   end

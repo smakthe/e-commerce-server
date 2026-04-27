@@ -10,9 +10,36 @@ class ProductsController < ApplicationController
 
   # GET /products
   def index
-    products = Product.all
-    products = products.where("name ILIKE ?", "%#{params[:search]}%") if params[:search].present?
-    products = products.order(created_at: :desc).limit(params.fetch(:limit, 25)).offset(params.fetch(:offset, 0))
+    if params[:search].present?
+      # Use Elasticsearch if a search term is provided
+      limit = params.fetch(:limit, 24).to_i
+      offset = params.fetch(:offset, 0).to_i
+      products = Product.search(
+        query: {
+          multi_match: {
+            query: params[:search],
+            fields: ['name^3', 'description']
+          }
+        },
+        size: limit,
+        from: offset
+      ).records
+    elsif params[:collection].present?
+      limit = params.fetch(:limit, 24).to_i
+      offset = params.fetch(:offset, 0).to_i
+      case params[:collection]
+      when 'best_selling'
+        products = Product.order(total_sales_volume: :desc).limit(limit).offset(offset)
+      when 'maximum_revenue'
+        products = Product.order(total_revenue: :desc).limit(limit).offset(offset)
+      else # newest_arrivals or default
+        products = Product.order(created_at: :desc).limit(limit).offset(offset)
+      end
+    else
+      # Standard ActiveRecord pull
+      products = Product.order(created_at: :desc).limit(params.fetch(:limit, 25)).offset(params.fetch(:offset, 0))
+    end
+    
     render json: products
   end
 

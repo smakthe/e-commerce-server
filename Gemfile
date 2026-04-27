@@ -18,6 +18,10 @@ gem "jwt", "~> 2.9"
 
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
+# Elasticsearch integration
+gem "elasticsearch-model"
+gem "elasticsearch-rails"
+
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem "solid_cache"
 gem "solid_queue"
@@ -39,6 +43,7 @@ gem "image_processing", "~> 1.2"
 # gem "rack-cors"
 
 group :development, :test do
+  gem "dotenv-rails"
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
 
   # Audits gems for known security defects (use config/bundler-audit.yml to ignore issues)
