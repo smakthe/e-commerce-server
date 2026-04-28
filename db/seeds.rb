@@ -160,6 +160,12 @@ ActiveRecord::Base.connection.execute("SELECT setval('orders_id_seq', (SELECT CO
 ActiveRecord::Base.connection.execute("SELECT setval('order_items_id_seq', (SELECT COALESCE(MAX(id), 1) FROM order_items))")
 ActiveRecord::Base.connection.execute("SELECT setval('payments_id_seq', (SELECT COALESCE(MAX(id), 1) FROM payments))")
 
+# Build ElasticSearch Index
+puts "Building ElasticSearch Index..."
+Product.__elasticsearch__.create_index!
+Product.import
+puts "ElasticSearch Index built!"
+
 duration = (Time.now - start_time).round(2)
 puts "\nUltra-Fast Seeding complete in #{duration} seconds!"
 puts "--- Database Stats ---"
