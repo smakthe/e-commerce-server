@@ -13,12 +13,10 @@ class Product < ApplicationRecord
   scope :maximum_revenue, -> { order(total_revenue: :desc).limit(4) }
 
   def self.explore_data
-    Rails.cache.fetch('products/explore_data', expires_in: 12.hours) do
-      {
-        newest_arrivals: newest_arrivals.to_a,
-        best_selling: best_selling.to_a,
-        maximum_revenue: maximum_revenue.to_a
-      }
-    end
+    {
+      newest_arrivals: newest_arrivals.to_a,
+      best_selling: best_selling.to_a,
+      maximum_revenue: maximum_revenue.to_a
+    }
   end
 end

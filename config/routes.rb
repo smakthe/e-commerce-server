@@ -6,6 +6,9 @@ Rails.application.routes.draw do
   post "auth/register", to: "auth#register"
   post "auth/login",    to: "auth#login"
 
+  # --- Checkout (atomic: order + items + payment in one transaction) ---
+  post "checkout", to: "checkout#create"
+
   # --- Users ---
   get  "users/me/stats", to: "users#stats"
   get  "users/me",  to: "users#me"
