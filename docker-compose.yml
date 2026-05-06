@@ -29,7 +29,7 @@ services:
       - elastic_data:/usr/share/elasticsearch/data
 
   web:
-    build: .
+    image: smakthe/e-commerce:latest
     restart: unless-stopped
     ports:
       - "3000:80"
