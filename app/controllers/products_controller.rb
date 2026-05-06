@@ -39,7 +39,7 @@ class ProductsController < ApplicationController
       # Standard ActiveRecord pull
       products = Product.order(created_at: :desc).limit(params.fetch(:limit, 25)).offset(params.fetch(:offset, 0))
     end
-    
+
     render json: products
   end
 

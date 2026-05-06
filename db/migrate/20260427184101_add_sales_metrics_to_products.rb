@@ -12,8 +12,8 @@ class AddSalesMetricsToProducts < ActiveRecord::Migration[8.1]
       SET total_sales_volume = COALESCE(agg.volume, 0),
           total_revenue = COALESCE(agg.revenue, 0)
       FROM (
-        SELECT product_id, 
-               SUM(quantity) as volume, 
+        SELECT product_id,#{' '}
+               SUM(quantity) as volume,#{' '}
                SUM(quantity * unit_price) as revenue
         FROM order_items
         GROUP BY product_id
@@ -25,7 +25,7 @@ class AddSalesMetricsToProducts < ActiveRecord::Migration[8.1]
   def down
     remove_index :products, :total_sales_volume
     remove_index :products, :total_revenue
-    
+
     remove_column :products, :total_sales_volume
     remove_column :products, :total_revenue
   end

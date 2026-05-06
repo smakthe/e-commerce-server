@@ -16,7 +16,7 @@ class User < ApplicationRecord
   def dashboard_stats
     total = orders.count
     amount = orders.sum(:total_amount)
-    
+
     {
       total_orders: total,
       total_amount: amount,

@@ -53,8 +53,8 @@ products.each_slice(10_000) { |batch| Product.insert_all!(batch) }
 puts "Products done!"
 
 # 3. Orders and Order Items in Parallel Processes
-# Optimize for Dual-Core i5 by spanning 4 logical processes 
-NUM_PROCESSES = [Etc.nprocessors || 2, 4].min 
+# Optimize for Dual-Core i5 by spanning 4 logical processes
+NUM_PROCESSES = [ Etc.nprocessors || 2, 4 ].min
 puts "Forking #{NUM_PROCESSES} parallel workers to seed #{NUM_ORDERS} Orders & 2.5M OrderItems..."
 
 orders_per_process = NUM_ORDERS / NUM_PROCESSES
@@ -66,32 +66,32 @@ pids = NUM_PROCESSES.times.map do |process_idx|
   Process.fork do
     # Reconnect in child process
     ActiveRecord::Base.establish_connection
-    
+
     start_id = process_idx * orders_per_process + 1
     end_id   = start_id + orders_per_process - 1
 
     is_reporter = (process_idx == 0)
-    
+
     statuses = %w[pending processing shipped delivered]
     payment_statuses = %w[completed completed pending failed]
-    
+
     batch_size = 5_000
     (start_id..end_id).each_slice(batch_size) do |batch_ids|
       orders_batch = []
       items_batch  = []
       payments_batch = []
-      
+
       batch_ids.each do |order_id|
         user_id = rand(1..NUM_USERS)
         items_count = rand(1...5)
         total_amount = 0.0
-        
+
         items_count.times do
           prod_id = rand(1..NUM_PRODUCTS)
           unit_price = rand(10.0..500.0).round(2)
           qty = rand(1..3)
           total_amount += unit_price * qty
-          
+
           items_batch << {
             order_id: order_id,
             product_id: prod_id,
@@ -101,10 +101,10 @@ pids = NUM_PROCESSES.times.map do |process_idx|
             updated_at: Time.now
           }
         end
-        
+
         order_date = Time.now - rand(0..365).days
         status = statuses.sample
-        
+
         orders_batch << {
           id: order_id,
           user_id: user_id,
@@ -114,7 +114,7 @@ pids = NUM_PROCESSES.times.map do |process_idx|
           created_at: Time.now,
           updated_at: Time.now
         }
-        
+
         if status != "cancelled" && rand > 0.15 # 85% chance of payment
           payments_batch << {
             order_id: order_id,
@@ -126,12 +126,12 @@ pids = NUM_PROCESSES.times.map do |process_idx|
           }
         end
       end
-      
+
       # Use insert_all! which bypasses model validations and inserts directly in raw batches
       Order.insert_all!(orders_batch)
       OrderItem.insert_all!(items_batch)
       Payment.insert_all!(payments_batch) if payments_batch.any?
-      
+
       if is_reporter
         progress = ((batch_ids.last - start_id + 1).to_f / orders_per_process * 100).round(1)
         print "\r  ... Progress: #{progress}%\e[K"
