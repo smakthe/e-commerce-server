@@ -18,6 +18,7 @@ services:
 
   elasticsearch:
     image: elasticsearch:9.3.3
+    container_name: shared_elasticsearch
     restart: unless-stopped
     ports:
       - "9200:9200"
@@ -27,6 +28,9 @@ services:
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
     volumes:
       - elastic_data:/usr/share/elasticsearch/data
+    networks:
+      - default
+      - shared_elastic_net
 
   web:
     image: smakthe/e-commerce:latest
@@ -43,7 +47,14 @@ services:
         condition: service_healthy
       elasticsearch:
         condition: service_started
+    networks:
+      - default
+      - shared_elastic_net
 
 volumes:
   postgres_data:
   elastic_data:
+
+networks:
+  shared_elastic_net:
+    external: true
