@@ -14,7 +14,7 @@ gem "puma", ">= 5.0"
 gem "bcrypt", "~> 3.1.7"
 
 # JWT for token-based API authentication
-gem "jwt", "~> 2.9"
+gem "jwt", "~> 3.1"
 
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
