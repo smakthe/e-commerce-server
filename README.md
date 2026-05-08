@@ -1,4 +1,4 @@
-# E-Commerce API 🛒
+# Ecomart API 🛒
 
 A robust, high-performance E-Commerce REST API backend built with Ruby on Rails. Designed with a clean relational schema, it features token-based stateless authentication (JWT), secure password hashing (BCrypt), and an incredibly efficient multi-core database seeding architecture.
 
@@ -22,10 +22,10 @@ bundle install
 
 ### 2. Database Initialization
 
-Drop any legacy configurations and hydrate your database entirely from scratch:
+Drop any legacy configurations and create your database entirely from scratch:
 
 ```bash
-# Create, migrate, and establish schema rules
+# Create the database and apply migrations
 rails db:create db:migrate
 ```
 
@@ -64,7 +64,8 @@ _(Pass the returned token in the `Authorization: Bearer <token>` header for prot
 
 ### Orders
 
-*(Protected endpoints: Require `Authorization: Bearer <token>`)*
+_(Protected endpoints: Require `Authorization: Bearer <token>`)_
+
 - `GET /orders` - Retrieve list of orders for the authenticated user
 - `GET /orders/:id` - Retrieve a specific order
 - `POST /orders` - Create a new order
